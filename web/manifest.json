@@ -1,6 +1,6 @@
 {
-    "name": "medical_demo",
-    "short_name": "medical_demo",
+    "name": "bloc_app",
+    "short_name": "bloc_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

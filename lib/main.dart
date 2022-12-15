@@ -1,74 +1,76 @@
+import 'package:bloc_app/logic/0_home_cubits/choose_patient/choose_patient_cubit.dart';
+import 'package:bloc_app/logic/1_patient_cubits/patient_status/patient_status_cubit.dart';
+import 'package:bloc_app/logic/blocs/timer_bloc.dart';
+import 'package:bloc_app/presentation/router/app_router.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:medical_demo/medical_home_screen.dart';
-import 'package:medical_demo/sizeDevide.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 
-Future<void> main() async {
+import 'logic/1_patient_cubits/no_insulin/no_insulin_cubit.dart';
+import 'logic/bar_cubits/navigator_bar_cubit.dart';
+import 'logic/models/ticker.dart';
+import 'logic/one_shot_cubits/internet/internet_cubit.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(MyApp(
+    connectivity: Connectivity(),
+    appRouter: AppRouter(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final AppRouter appRouter;
 
+  final Connectivity connectivity;
+  const MyApp({
+    Key? key,
+    required this.connectivity,
+    required this.appRouter,
+  }) : super(key: key);
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        textTheme: const TextTheme(
-          headline1: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-          headline2: TextStyle(fontSize: 16.0, color: Colors.black),
-          bodyText2: TextStyle(fontSize: 20.0, fontFamily: 'Hind'),
+  Widget build(BuildContext myAppContext) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<InternetCubit>(
+          create: (internetCubitContext) =>
+              InternetCubit(connectivity: connectivity),
         ),
+        BlocProvider<BottomNavigatorBarCubit>(
+          create: (navigatorBarCubitContext) => BottomNavigatorBarCubit(),
+        ),
+        BlocProvider<ChoosePatientCubit>(
+          create: (navigatorBarCubitContext) => ChoosePatientCubit(),
+        ),
+        BlocProvider<TimerBloc>(
+          create: (context) => TimerBloc(ticker: Ticker()),
+        ),
+        BlocProvider<NoInsulinCubit>(
+            create: (noInsulinContext) => NoInsulinCubit(
+                  choosePatientCubit:
+                      BlocProvider.of<ChoosePatientCubit>(noInsulinContext),
+                )),
+        BlocProvider<PatientStatusCubit>(
+          create: (context) => PatientStatusCubit(
+            choosePatientCubit: BlocProvider.of<ChoosePatientCubit>(context),
+          ),
+          child: Container(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        onGenerateRoute: appRouter.onGeneratedRoute,
       ),
-      home: const MyHomePage(title: 'Medicial Home'),
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    widthDevide = MediaQuery.of(context).size.width;
-    heightDevide = MediaQuery.of(context).size.height;
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return MedicalHomeScreen();
   }
 }
