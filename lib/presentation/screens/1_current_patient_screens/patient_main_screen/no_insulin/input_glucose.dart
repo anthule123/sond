@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nice_buttons/nice_buttons.dart';
 
-import '../../../../logic/1_patient_cubits/no_insulin/no_insulin_cubit.dart';
-import '../../../../logic/one_shot_cubits/text_form/text_form_cubit.dart';
+import '../../../../../logic/1_patient_cubits/no_insulin/no_insulin_cubit.dart';
+import '../../../../../logic/one_shot_cubits/text_form/text_form_cubit.dart';
 
 class inputGlucose extends StatelessWidget {
   const inputGlucose({
@@ -23,34 +23,32 @@ class inputGlucose extends StatelessWidget {
         create: (_) => TextFormCubit(),
         child: BlocBuilder<TextFormCubit, String>(
           builder: (context, state) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Center(
-                    child: SizedBox(
-                      width: 100.0,
-                      height: 50,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: '0',
-                        ),
-                        onChanged: (text) {
-                          BlocProvider.of<TextFormCubit>(context).update(text);
-                        },
+            return Column(
+              children: [
+                Center(
+                  child: SizedBox(
+                    width: 100.0,
+                    height: 50,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: '0',
                       ),
+                      onChanged: (text) {
+                        BlocProvider.of<TextFormCubit>(context).update(text);
+                      },
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Glucose_Button(),
-                  Text(BlocProvider.of<NoInsulinCubit>(context)
-                      .state
-                      .medicalStatus
-                      .toString()),
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Glucose_Button(),
+                // Text(BlocProvider.of<NoInsulinCubit>(context)
+                //     .state
+                //     .medicalStatus
+                //     .toString()),
+              ],
             );
           },
         ),
@@ -82,18 +80,16 @@ class Glucose_Button extends StatelessWidget {
         child: Text('Tiếp tục'),
       );
     } else
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            Text('Bạn cần điền dưới dạng số'),
-            SizedBox(height: 15),
-            GreyNextButton(),
-            Text(BlocProvider.of<NoInsulinCubit>(context)
-                .state
-                .medicalStatus
-                .toString()),
-          ],
-        ),
+      return Column(
+        children: [
+          Text('Bạn cần điền dưới dạng số'),
+          SizedBox(height: 20),
+          GreyNextButton(),
+          // Text(BlocProvider.of<NoInsulinCubit>(context)
+          //     .state
+          //     .medicalStatus
+          //     .toString()),
+        ],
       );
   }
 }
