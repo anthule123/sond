@@ -13,7 +13,7 @@ class DoctorProfileScreen extends StatelessWidget {
       appBar: AppBar(
         flexibleSpace: DoctorNavigatorBar(),
       ),
-      body: SingleChildScrollView(child: Column()),
+      body: Column(),
       bottomNavigationBar: BottomNavigatorBar(),
     );
   }

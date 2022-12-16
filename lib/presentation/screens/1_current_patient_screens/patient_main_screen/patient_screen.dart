@@ -42,7 +42,7 @@ class PatientScreen extends StatelessWidget {
                         ],
                       );
                     else
-                      return Text('Chưa đến giờ điều trị');
+                      return Text('Chưa đcến giờ điều trị');
                   }),
                 ),
               ],
@@ -74,9 +74,9 @@ class DoctorImage extends StatelessWidget {
           Container(
             alignment: Alignment.center,
             child: SizedBox(
-                // width: widthDevideMethod(0.7),
-                height: 250,
+                height: 200,
                 width: 330,
+                // width: widthDevideMethod(0.7),
                 child: Align(
                   alignment: Alignment.center,
                   child: Image.asset("assets/images/doctor.jpg",
